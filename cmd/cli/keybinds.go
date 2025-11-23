@@ -27,12 +27,12 @@ var DefaultKeyMap = KeyMap{
 func (m *AppModel) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 	switch {
 	case key.Matches(msg, DefaultKeyMap.Up):
-		if m.selected > 0 {
-			m.selected -= 1
+		if m.cursor > 0 {
+			m.cursor -= 1
 		}
 	case key.Matches(msg, DefaultKeyMap.Down):
-		if m.selected < len(m.rows)-1 {
-			m.selected += 1
+		if m.cursor < len(m.rows)-1 {
+			m.cursor += 1
 		}
 	case key.Matches(msg, DefaultKeyMap.Quit):
 		return tea.Quit
