@@ -12,6 +12,7 @@ var gap int = 4
 type Row struct {
 	pkg          entities.Package
 	columnWidths []int
+	target       *entities.Version
 }
 
 func New(pkg entities.Package, columnWidths []int) Row {
@@ -27,6 +28,12 @@ func (r Row) Init() tea.Cmd {
 
 func (r Row) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
+
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		cmds = append(cmds, r.handleKeyPress(msg))
+	}
+
 	return r, tea.Batch(cmds...)
 }
 
@@ -34,6 +41,23 @@ func (r Row) View() string {
 	nameCellStyle := lipgloss.NewStyle()
 	wantedCellStyle := lipgloss.NewStyle()
 	latestCellStyle := lipgloss.NewStyle()
+
+	if r.target != nil {
+		switch *r.target {
+		case r.pkg.Wanted:
+			wantedCellStyle = wantedStyle
+		case r.pkg.Latest:
+			latestCellStyle = latestStyle
+		}
+	}
+
+	if r.pkg.Current.Compare(r.pkg.Wanted) == -1 {
+		nameCellStyle = needUpdateStyle
+	} else if r.pkg.Current.Compare(r.pkg.Wanted) == 1 {
+		nameCellStyle = errorVersionStyle
+	} else {
+		nameCellStyle = optionalUpdateStyle
+	}
 
 	nameCell := lipgloss.PlaceHorizontal(
 		r.columnWidths[0]+gap,
