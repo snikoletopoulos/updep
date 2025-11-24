@@ -56,6 +56,12 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, m.handleKeyPress(msg))
 	}
 
+	if m.cursor < len(m.rows)-1 {
+		rowModel, cmd := m.rows[m.cursor].Update(msg)
+		m.rows[m.cursor] = rowModel.(row.Row)
+		cmds = append(cmds, cmd)
+	}
+
 	var cmd tea.Cmd
 	m.spinner, cmd = m.spinner.Update(msg)
 	cmds = append(cmds, cmd)
