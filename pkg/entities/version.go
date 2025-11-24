@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// Version will break currently if version has prefix or suffix
 type Version struct {
 	major int
 	minor int
