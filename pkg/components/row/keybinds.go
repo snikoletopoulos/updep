@@ -20,7 +20,7 @@ var keyMap = KeyMap{
 	),
 	ToggleSelect: key.NewBinding(
 		key.WithKeys(" "),
-		key.WithHelp("space", "toggle select"),
+		key.WithHelp("space", "toggle"),
 	),
 }
 
@@ -33,12 +33,12 @@ func (r *Row) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 	case key.Matches(msg, keyMap.ToggleSelect):
 		if r.target != nil {
 			r.target = nil
+			break
+		}
+		if r.pkg.Current.Compare(r.pkg.Wanted) >= 0 {
+			r.target = &r.pkg.Latest
 		} else {
-			if r.pkg.Current == r.pkg.Wanted {
-				r.target = &r.pkg.Latest
-			} else {
-				r.target = &r.pkg.Wanted
-			}
+			r.target = &r.pkg.Wanted
 		}
 	}
 	return nil
