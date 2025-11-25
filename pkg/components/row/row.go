@@ -1,24 +1,24 @@
 package row
 
 import (
-	"npmupdate/pkg/entities"
+	"npmupdate/pkg/config"
+	packagemodel "npmupdate/pkg/models/package"
+	"npmupdate/pkg/models/version"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
-var gap int = 4
-
 type Row struct {
-	pkg          entities.Package
-	columnWidths []int
-	target       *entities.Version
+	pkg          packagemodel.Package
+	target       *version.Version
+	ColumnWidths [config.ColumnCount]int
 }
 
-func New(pkg entities.Package, columnWidths []int) Row {
+func New(pkg packagemodel.Package, columnWidths [config.ColumnCount]int) Row {
 	return Row{
 		pkg:          pkg,
-		columnWidths: columnWidths,
+		ColumnWidths: columnWidths,
 	}
 }
 
@@ -38,9 +38,28 @@ func (r Row) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (r Row) View() string {
-	nameCellStyle := lipgloss.NewStyle()
-	wantedCellStyle := lipgloss.NewStyle()
-	latestCellStyle := lipgloss.NewStyle()
+	var cells []string
+	for index, cell := range r.getCellStyles() {
+		width := r.ColumnWidths[index] + config.ColumnGap
+		if index == len(r.ColumnWidths)-1 {
+			width -= config.ColumnGap
+		}
+		cells = append(cells, lipgloss.PlaceHorizontal(width, lipgloss.Left, cell))
+	}
+
+	return lipgloss.JoinHorizontal(lipgloss.Center, cells...)
+}
+
+func (r Row) getCellStyles() [config.ColumnCount]string {
+	var nameCellStyle, wantedCellStyle, latestCellStyle lipgloss.Style
+
+	if r.pkg.Current.Compare(r.pkg.Wanted) == -1 {
+		nameCellStyle = needUpdateStyle
+	} else if r.pkg.Current.Compare(r.pkg.Wanted) == 1 {
+		nameCellStyle = errorVersionStyle
+	} else {
+		nameCellStyle = optionalUpdateStyle
+	}
 
 	if r.target != nil {
 		switch *r.target {
@@ -51,40 +70,10 @@ func (r Row) View() string {
 		}
 	}
 
-	if r.pkg.Current.Compare(r.pkg.Wanted) == -1 {
-		nameCellStyle = needUpdateStyle
-	} else if r.pkg.Current.Compare(r.pkg.Wanted) == 1 {
-		nameCellStyle = errorVersionStyle
-	} else {
-		nameCellStyle = optionalUpdateStyle
-	}
-
-	nameCell := lipgloss.PlaceHorizontal(
-		r.columnWidths[0]+gap,
-		lipgloss.Left,
+	return [config.ColumnCount]string{
 		nameCellStyle.Render(r.pkg.Name),
-	)
-	wantedCell := lipgloss.PlaceHorizontal(
-		r.columnWidths[1]+gap,
-		lipgloss.Left,
 		wantedCellStyle.Render(r.pkg.Wanted.String()),
-	)
-	latestCell := lipgloss.PlaceHorizontal(
-		r.columnWidths[2]+gap,
-		lipgloss.Left,
 		latestCellStyle.Render(r.pkg.Latest.String()),
-	)
-	currentCell := lipgloss.PlaceHorizontal(
-		r.columnWidths[3],
-		lipgloss.Left,
 		r.pkg.Current.String(),
-	)
-
-	return lipgloss.JoinHorizontal(
-		lipgloss.Center,
-		nameCell,
-		wantedCell,
-		latestCell,
-		currentCell,
-	)
+	}
 }
