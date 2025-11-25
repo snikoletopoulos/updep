@@ -64,7 +64,6 @@ updep
 - [ ] yarn support
 - [ ] pnpm support
 - [ ] bun support
-- [ ] Batch update selected packages
 - [ ] Configuration file support
 - [ ] Custom color themes
 
