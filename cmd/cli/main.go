@@ -84,9 +84,35 @@ func (m AppModel) View() string {
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
+		headerView(m.columnWidths),
 		lipgloss.JoinVertical(lipgloss.Left, renderRows...),
 		m.help.View(keyMap),
 	)
+}
+
+func headerView(columnWidths [config.ColumnCount]int) string {
+	columnNames := [config.ColumnCount]string{
+		"Package Name",
+		"Wanted",
+		"Latest",
+		"Current",
+	}
+
+	for i, name := range columnNames {
+		gap := config.ColumnGap
+		if i == len(columnNames)-1 {
+			gap = 0
+		}
+		columnNames[i] = lipgloss.PlaceHorizontal(
+			columnWidths[i]+gap,
+			lipgloss.Left,
+			name,
+		)
+	}
+	return headerStyle.Render(lipgloss.JoinHorizontal(
+		lipgloss.Center,
+		columnNames[:]...,
+	))
 }
 
 func main() {
