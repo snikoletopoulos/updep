@@ -74,17 +74,12 @@ func (m AppModel) View() string {
 		return m.spinner.View() + " Getting outdated packages"
 	}
 
-	renderRows := []string{}
+	renderRows := make([]string, len(m.rows))
 	for i, p := range m.rows {
-		if i != m.cursor {
-			renderRows = append(renderRows, p.View())
-			continue
+		renderRows[i] = p.View()
+		if i == m.cursor {
+			renderRows[i] = row.ActiveRowStyle.Render(p.View())
 		}
-
-		renderRows = append(
-			renderRows,
-			row.ActiveRowStyle.Render(p.View()),
-		)
 	}
 
 	return lipgloss.JoinVertical(
