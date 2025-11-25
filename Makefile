@@ -13,6 +13,10 @@ run:
 build:
 	@go build -ldflags="-w -s" -o updep ./cmd/updep
 
+.PHONY: install
+install:
+	@go install -ldflags="-w -s" ./cmd/updep
+
 .PHONY: start
 start:
 	@./tmp/updep
