@@ -15,14 +15,11 @@ PLATFORM_FILES = $(foreach platform, $(PLATFORMS), npm/platforms/$(platform)/$(c
 APP_NAME = updep
 binaryname = $(if $(findstring win32, $(1)),$(APP_NAME).exe,$(APP_NAME))
 
-getos = $(subst win32,windows,$(firstword $(subst -, ,$(1))))
-getarch = $(subst x64,amd64,$(lastword $(subst -, ,$(1))))
+os = $(subst win32,windows,$(firstword $(subst -, ,$(1))))
+arch = $(subst x64,amd64,$(lastword $(subst -, ,$(1))))
 
 .PHONY: all
-all: build
-
-.PHONY: build
-build: $(PLATFORM_FILES)
+all: $(PLATFORM_FILES)
 
 .PHONY: format
 format:
@@ -30,19 +27,7 @@ format:
 
 npm/platforms/%/$(APP_NAME) npm/platforms/%/$(APP_NAME).exe: $(PROJECT_FILES)
 	$(info Building $*)
-	GOOS=$(call getos,$*) GOARCH=$(call getarch,$*) go build $(GO_FLAGS) -o $@ ./cmd/$(APP_NAME)
-
-define npm-command
-	pushd $(1);
-	npm pkg get version;
-	popd;
-endef
-
-.PHONY: npm
-.ONESHELL:
-npm:
-	cd npm/platforms
-	pwd
+	GOOS=$(call os,$*) GOARCH=$(call arch,$*) go build $(GO_FLAGS) -o $@ ./cmd/$(APP_NAME)
 
 .PHONY: run
 run:
