@@ -34,7 +34,7 @@ run:
 	@go run ./cmd/$(APP_NAME)
 
 .PHONY: install
-install: build
+install: $(PROJECT_FILES)
 	@go install $(GO_FLAGS) ./cmd/$(APP_NAME)
 
 .PHONY: check
