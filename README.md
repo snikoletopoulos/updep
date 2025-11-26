@@ -5,6 +5,8 @@
 [![License](https://img.shields.io/github/license/snikoletopoulos/updep)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/snikoletopoulos/updep)](https://goreportcard.com/report/github.com/snikoletopoulos/updep)
 
+> **Note**: This project is currently under active development. Features and APIs may change.
+
 Interactive TUI for updating JavaScript dependencies. Works with npm, yarn, pnpm, and bun.
 
 ## Demo
