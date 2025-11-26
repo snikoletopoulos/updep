@@ -1,5 +1,5 @@
 # Strip debug info
-GO_FLAGS += "-ldflags=-w -s"
+GO_FLAGS += -ldflags="-w -s"
 # Avoid embedding the build path in the executable for more reproducible builds
 GO_FLAGS += -trimpath
 
