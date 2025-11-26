@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"updep/pkg/components/row"
 	"updep/pkg/config"
 
@@ -11,7 +13,7 @@ import (
 )
 
 type AppModel struct {
-	loading      bool
+	loading      string
 	spinner      spinner.Model
 	help         help.Model
 	rows         []row.Row
@@ -25,7 +27,7 @@ func NewAppModel() AppModel {
 	s.Style = lipgloss.NewStyle().Foreground(config.Theme.Mauve)
 
 	return AppModel{
-		loading:      true,
+		loading:      "Getting outdated packages",
 		spinner:      s,
 		help:         help.New(),
 		rows:         []row.Row{},
@@ -49,7 +51,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		for i, p := range packages {
 			m.rows[i] = row.New(p, m.columnWidths)
 		}
-		m.loading = false
+		m.loading = ""
 	case tea.KeyMsg:
 		cmds = append(cmds, m.handleKeyPress(msg))
 	}
@@ -60,7 +62,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, cmd)
 	}
 
-	if m.loading {
+	if m.loading != "" {
 		var cmd tea.Cmd
 		m.spinner, cmd = m.spinner.Update(msg)
 		cmds = append(cmds, cmd)
@@ -70,8 +72,8 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m AppModel) View() string {
-	if m.loading {
-		return m.spinner.View() + " Getting outdated packages"
+	if m.loading != "" {
+		return fmt.Sprintf("%v %s", m.spinner.View(), m.loading)
 	}
 
 	renderRows := make([]string, len(m.rows))
