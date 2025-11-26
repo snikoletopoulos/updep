@@ -27,7 +27,7 @@ format:
 
 npm/platforms/%/$(APP_NAME) npm/platforms/%/$(APP_NAME).exe: $(PROJECT_FILES)
 	$(info Building $*)
-	GOOS=$(call os,$*) GOARCH=$(call arch,$*) go build $(GO_FLAGS) -o $@ ./cmd/$(APP_NAME)
+	@GOOS=$(call os,$*) GOARCH=$(call arch,$*) go build $(GO_FLAGS) -o $@ ./cmd/$(APP_NAME)
 
 .PHONY: run
 run:
