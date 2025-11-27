@@ -1,0 +1,44 @@
+{
+  "name": "@nikero/updep",
+  "version": "0.1.0",
+  "description": "Interactive TUI for updating JavaScript dependencies",
+  "author": "Stavros Nikolopoulos <snikoletopoulos@hotmail.com>",
+  "license": "MIT",
+  "repository": "github:nikero41/updep",
+  "bugs": "https://github.com/nikero41/updep/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "npm",
+    "yarn",
+    "pnpm",
+    "bun",
+    "dependencies",
+    "update",
+    "cli",
+    "tui",
+    "package-manager"
+  ],
+  "bin": {
+    "updep": "./bin/updep.js"
+  },
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "optionalDependencies": {
+    "@nikero/updep-darwin-arm64": "0.1.0",
+    "@nikero/updep-darwin-x64": "0.1.0",
+    "@nikero/updep-linux-arm64": "0.1.0",
+    "@nikero/updep-linux-x64": "0.1.0",
+    "@nikero/updep-win32-arm64": "0.1.0",
+    "@nikero/updep-win32-x64": "0.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin",
+    "install.js"
+  ]
+}
